@@ -1,0 +1,6 @@
+base url = https://newsapi.org/
+Your API key is: feedb05cb63443b1b87ffdcd604ac2ba
+flask 
+requests
+
+
