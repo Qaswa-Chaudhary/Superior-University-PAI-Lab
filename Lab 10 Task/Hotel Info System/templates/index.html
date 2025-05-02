@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center h-screen">
+    <div class="w-full h-full flex flex-col">
+        <!-- Chat Header -->
+        <div class="bg-green-600 text-white text-center p-4 font-bold text-lg">
+            Hotel Management Chatbot 
+        </div>
+
+        <!-- Chat Box -->
+        <div id="chat-box" class="flex-1 p-4 overflow-y-auto text-black flex flex-col">
+            <div class="bot-text bg-gray-300 p-3 rounded-lg mb-2 w-fit max-w-lg">
+                <strong>Bot:</strong> Hi! I am your Hotel Management chatbot. How can I assist you?
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typing" class="hidden text-gray-500 text-sm px-4 py-2">
+            Bot is typing<span class="dots">...</span>
+        </div>
+
+        <!-- Input Box -->
+        <div class="flex items-center border-t border-gray-300 p-4">
+            <input id="user-input" type="text" placeholder="Type a message..." 
+                class="flex-1 p-2 border bg-gray-200 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+            <button onclick="sendMessage()" class="ml-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let userInput = document.getElementById("user-input").value.trim();
+            let chatBox = document.getElementById("chat-box");
+
+            if (userInput === "") return;
+
+            let userMessage = `<div class="user-text bg-green-600 text-white p-3 rounded-lg mb-2 max-w-lg ml-auto">
+                                  <strong>You:</strong> ${userInput}
+                               </div>`;
+            chatBox.innerHTML += userMessage;
+            document.getElementById("user-input").value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            document.getElementById("typing").classList.remove("hidden");
+
+            fetch("/get", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("typing").classList.add("hidden");
+                let botMessage = `<div class="bot-text bg-gray-300 text-black p-3 rounded-lg mb-2 w-fit max-w-lg">
+                                    <strong>Bot:</strong> ${data.response}
+                                  </div>`;
+                chatBox.innerHTML += botMessage;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
+    </script>
+</body>
+</html>
