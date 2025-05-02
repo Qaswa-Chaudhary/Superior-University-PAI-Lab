@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Academic Research Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+            <h1>📘 Academic Research Assistant Bot</h1>
+            <form method="POST" enctype="multipart/form-data">
+                <label for="pdf">Upload your Research PDF:</label>
+                {% if not uploaded_file %}
+                    <input type="file" name="pdf" accept=".pdf" required>
+                {% else %}
+                    <p>Uploaded file: {{ uploaded_file }}</p>
+                    <button type="submit" name="upload_new" value="true">Upload Another</button>
+                {% endif %}
+                
+                <label for="question">Enter your research question:</label>
+                <input type="text" name="question">
+        
+                <button type="submit">Ask Bot</button>
+            </form>
+
+            {% if answer %}
+            <div class="response-box">
+                <h2>🤖 Bot Answer</h2>
+                <ul>
+                    {% for line in answer.split('\n') %}
+                        {% if line.strip() %}
+                            <li>{{ line }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
